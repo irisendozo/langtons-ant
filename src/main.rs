@@ -1,46 +1,80 @@
 extern crate nalgebra;
 
-use nalgebra::{Matrix2, Vector2}; //, Vector3, Matrix3};
+use nalgebra::Vector2;
 use std::collections::HashMap;
+use std::env;
 
-pub struct Simulator {
-    states: Vec<Matrix2<i32>>,
-    pub board: HashMap<Vector2<i32>, usize>,
-    pub ant_position: Vector2<i32>,
-    pub ant_direction: Vector2<i32>,
+pub struct Ant {
+    pub board: HashMap<Vector2<i32>, bool>,
+    pub position: Vector2<i32>,
+    pub direction: i32,
 }
 
-impl Simulator {
+impl Ant {
     pub fn new() -> Result<Self, &'static str> {
-        let mut states: Vec<Matrix2<i32>> = Vec::new();
-        states.push(Matrix2::new(0, -1, 1, 0));
-        states.push(Matrix2::new(0, 1, -1, 0));
-
-        Ok(Simulator {
-            states: states.clone(),
+        Ok(Ant {
             board: HashMap::new(),
-            ant_position: Vector2::new(0, 0),   // Ant is at origin
-            ant_direction: Vector2::new(-1, 0), // facing left
+            position: Vector2::new(0, 0),
+            direction: 3,
         })
     }
 
     pub fn simulate(&mut self) {
-        // Get the color of the square under the ant. Default to white
-        let square_color = self.board.get(&self.ant_position).cloned().unwrap_or(0);
-        // Rotate by the state of square.
-        self.ant_direction = self.states[square_color] * self.ant_direction;
-        // Advance the state of the square by 1, possible wrap to back to 0
-        self.board
-            .insert(self.ant_position, (square_color + 1) % self.states.len());
-        self.ant_position += self.ant_direction; // Move the ant by its direction
+        let color = self.board.get(&self.position).cloned().unwrap_or(false);
+
+        match color {
+            // Black
+            false => {
+                if self.direction == 3 {
+                    self.direction = 0
+                } else {
+                    self.direction = self.direction + 1;
+                }
+            }
+            // White
+            true => {
+                if self.direction == 0 {
+                    self.direction = 3
+                } else {
+                    self.direction = self.direction - 1;
+                }
+            }
+        }
+
+        // Invert the thing first before changing position
+        self.board.insert(self.position, !color);
+
+        match self.direction {
+            0 => self.position.y = self.position.y + 1,
+            1 => self.position.x = self.position.x + 1,
+            2 => self.position.y = self.position.y - 1,
+            3 => self.position.x = self.position.x - 1,
+            _ => print!("some error"),
+        }
     }
 }
 
 fn main() {
-    let max_steps = 1000000;
+    let args: Vec<String> = env::args().collect();
+    let flag = &args[1];
 
-    let mut sim = Simulator::new().unwrap();
-    for _ in 0..max_steps {
-        sim.simulate();
+    match flag.as_ref() {
+        "0" => {
+            let max_steps = 1000000;
+
+            let mut sim = Ant::new().unwrap();
+            for _ in 0..max_steps {
+                sim.simulate();
+            }
+        }
+        "1" => {
+            let max_steps = 11000;
+
+            let mut sim = Ant::new().unwrap();
+            for _ in 0..max_steps {
+                sim.simulate();
+            }
+        }
+        _ => print!("some error"),
     }
 }
