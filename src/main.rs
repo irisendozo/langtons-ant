@@ -7,7 +7,7 @@ use std::env;
 pub struct Ant {
     pub board: HashMap<Vector2<i32>, bool>,
     pub position: Vector2<i32>,
-    pub direction: i32,
+    pub direction: i8,
 }
 
 impl Ant {
@@ -60,19 +60,21 @@ fn main() {
 
     match flag.as_ref() {
         "0" => {
-            let max_steps = 1000000;
+            let max_steps = 1000000000;
 
-            let mut sim = Ant::new().unwrap();
+            let mut ant = Ant::new().unwrap();
             for _ in 0..max_steps {
-                sim.simulate();
+                ant.simulate();
             }
+
+            print!("x: {}, y: {}", ant.position.x, ant.position.y)
         }
         "1" => {
             let max_steps = 11000;
 
-            let mut sim = Ant::new().unwrap();
+            let mut ant = Ant::new().unwrap();
             for _ in 0..max_steps {
-                sim.simulate();
+                ant.simulate();
             }
         }
         _ => print!("some error"),
