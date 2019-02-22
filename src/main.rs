@@ -7,7 +7,7 @@ use std::env;
 pub struct Ant {
     pub board: HashMap<Vector2<i32>, bool>,
     pub position: Vector2<i32>,
-    pub direction: i32,
+    pub direction: i8,
 }
 
 impl Ant {
@@ -23,7 +23,7 @@ impl Ant {
         let color = self.board.get(&self.position).cloned().unwrap_or(false);
 
         match color {
-            // Black
+            // Black is false
             false => {
                 if self.direction == 3 {
                     self.direction = 0
@@ -31,7 +31,7 @@ impl Ant {
                     self.direction = self.direction + 1;
                 }
             }
-            // White
+            // White is true
             true => {
                 if self.direction == 0 {
                     self.direction = 3
@@ -60,19 +60,23 @@ fn main() {
 
     match flag.as_ref() {
         "0" => {
-            let max_steps = 1000000;
+            let max_steps = 1000000000;
 
-            let mut sim = Ant::new().unwrap();
+            let mut ant = Ant::new().unwrap();
             for _ in 0..max_steps {
-                sim.simulate();
+                ant.simulate();
             }
+
+            print!("x: {}, y: {}", ant.position.x, ant.position.y)
         }
         "1" => {
             let max_steps = 11000;
 
-            let mut sim = Ant::new().unwrap();
+            let mut ant = Ant::new().unwrap();
             for _ in 0..max_steps {
-                sim.simulate();
+                ant.simulate();
+
+                // Do some drawing here
             }
         }
         _ => print!("some error"),
