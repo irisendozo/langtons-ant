@@ -76,9 +76,6 @@ fn main() {
             let mut ant = Ant::new().unwrap();
             for _ in 0..max_steps {
                 ant.simulate();
-
-                // Do some drawing here
-                print!("x: {}, y: {} \n", ant.position.x, ant.position.y)
             }
         }
         _ => print!("some error"),
