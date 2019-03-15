@@ -15,6 +15,7 @@ impl Ant {
         Ok(Ant {
             board: HashMap::new(),
             position: Vector2::new(0, 0),
+            // Up: 0, Right: 1, Down: 2, Left: 3
             direction: 3,
         })
     }
@@ -77,6 +78,7 @@ fn main() {
                 ant.simulate();
 
                 // Do some drawing here
+                print!("x: {}, y: {} \n", ant.position.x, ant.position.y)
             }
         }
         _ => print!("some error"),
