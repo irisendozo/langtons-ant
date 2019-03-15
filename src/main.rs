@@ -15,6 +15,7 @@ impl Ant {
         Ok(Ant {
             board: HashMap::new(),
             position: Vector2::new(0, 0),
+            // Up: 0, Right: 1, Down: 2, Left: 3
             direction: 3,
         })
     }
@@ -23,7 +24,7 @@ impl Ant {
         let color = self.board.get(&self.position).cloned().unwrap_or(false);
 
         match color {
-            // Black
+            // Black is false
             false => {
                 if self.direction == 3 {
                     self.direction = 0
@@ -31,7 +32,7 @@ impl Ant {
                     self.direction = self.direction + 1;
                 }
             }
-            // White
+            // White is true
             true => {
                 if self.direction == 0 {
                     self.direction = 3
